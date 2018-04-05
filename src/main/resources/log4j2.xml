@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--status=off表示不输出log4j2本身的event信息。monitorInterval="3600"每隔一小时会扫描配置文件是否变更，自动重配-->
+<configuration status="off" monitorInterval="3600">
+    <!--定义输出目的地-->
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="[ARA-JCE] %d{MM-dd HH:mm:ss.SSS} [%t] %-5level %class{36} %L %M - %msg%xEx%n"/>
+        </Console>
+    </appenders>
+    <loggers>
+        <!--配置根Logger-->
+        <!-- 3rdparty Loggers -->
+        <!--<logger name="org.springframework.core" level="info"></logger>-->
+        <!--<logger name="org.springframework.beans" level="info"></logger>-->
+        <!--<logger name="org.springframework.context" level="info"></logger>-->
+        <!--<logger name="org.springframework.web" level="info"></logger>-->
+
+        <!--<logger name="com.jce.JceCipherObject" level="DEBUG" includeLocation="true" additivity="false">-->
+            <!--<appender-ref ref="Console"/>-->
+        <!--</logger>-->
+
+        <!--日志级别：ALL<TRACE<DEBUG<INFO<WARN<ERROR<FATAL<OFF-->
+        <!--设置根节点的日志输出级别，全配置文件以它为主-->
+        <root level="DEBUG">
+            <appender-ref ref="Console"/>
+        </root>
+    </loggers>
+</configuration>

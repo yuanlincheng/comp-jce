@@ -22,6 +22,7 @@ import java.security.cert.CertificateFactory;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Optional;
 
 /**
  * 文件名：
@@ -385,7 +386,7 @@ public abstract class JceCipherObject {
         boolean flag = false;   //验证通过标志
         ByteArrayInputStream subIn = null;
         FileInputStream rootIn = null;
-        try {
+        try{
             String start = "-----BEGIN CERTIFICATE-----\n";   //证书头
             String end = "\n-----END CERTIFICATE-----";       //证书尾
             String certificateValue = start + certData + end;  //完整证书串
@@ -421,8 +422,12 @@ public abstract class JceCipherObject {
             throw new JceException("根据根证书验证子证书的有效性失败，" + e.getMessage());
         } finally {
             try {
-                rootIn.close();
-                subIn.close();
+                if (Optional.of(rootIn).isPresent()) {
+                    rootIn.close();
+                }
+                if (Optional.of(subIn).isPresent()) {
+                    subIn.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

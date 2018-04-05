@@ -22,10 +22,9 @@ public class JceCommonUtil {
      * @return 公钥的Base64密码串
      */
     public static String readCertFile(String path) {
-        try {
-            // 读取证书文件
-            File file = new File(path);
-            InputStream inStream = new FileInputStream(file);
+        // 读取证书文件
+        File file = new File(path);
+        try(InputStream inStream = new FileInputStream(file)) {
             // 创建X509工厂类
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             //CertificateFactory cf = CertificateFactory.getInstance("X509");
@@ -72,6 +71,8 @@ public class JceCommonUtil {
         } catch (IOException e) {
             System.out.println("读取证书失败！");
             e.printStackTrace();
+        }finally {
+
         }
         return null;
     }

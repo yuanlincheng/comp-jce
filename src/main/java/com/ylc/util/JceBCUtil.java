@@ -24,7 +24,7 @@ public class JceBCUtil extends JceCipherObject {
     private static final Logger logger = LoggerFactory.getLogger(JceBCUtil.class);
 
     //初始化密钥存储区
-    public static Map<String, String> KEY_STORE_AREA = new HashMap<String, String>();
+    public static final Map<String, String> KEY_STORE_AREA = new HashMap<String, String>();
 
     public JceBCUtil(){
         logger.debug("[use non-enc-device]");

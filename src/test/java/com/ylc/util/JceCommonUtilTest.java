@@ -6,11 +6,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * 文件名：
- * 作者：tree
- * 时间：2017/4/10
- * 描述：
- * 版权：亚略特
+ * author: tree
+ * version: 1.0
+ * since:
+ * date: 2018/4/15 16:32
+ * description:
+ * own:
  */
 public class JceCommonUtilTest {
 

@@ -6,11 +6,12 @@ import org.junit.Test;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * 文件名：
- * 作者：tree
- * 时间：2017/4/1
- * 描述：
- * 版权：亚略特
+ * author: tree
+ * version: 1.0
+ * since:
+ * date: 2018/4/16 0:25
+ * description:
+ * own:
  */
 public class JceBCUtilTest {
 
@@ -24,12 +25,13 @@ public class JceBCUtilTest {
     @Test
     public void testGetKeyPair() throws Exception {
         assertNotNull(jce.getKeyPair("RSA",-1,1024));
-        assertNotNull(jce.getKeyPair("SM2",1,0));
+        assertNotNull(jce.getKeyPair("RSA",1,0));
     }
 
     @Test
     public void testGetKey() throws Exception {
         assertNotNull(jce.getKey("AES",-1,128));
-        assertNotNull(jce.getKey("SM4",-1,256));
+        assertNotNull(jce.getKey("SM4",-1,128));
+        assertNotNull(jce.getKey("SM4",1,0));
     }
 }

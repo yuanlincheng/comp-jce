@@ -1,11 +1,12 @@
 package com.ylc.exception;
 
 /**
- * @author: tree
- * @version: 1.0
- * date: 2017/8/21 11:55
- * @description:
- * own: Aratek
+ * author: tree
+ * version: 1.0
+ * since:
+ * date: 2018/4/15 16:25
+ * description:
+ * own:
  */
 public class JceException extends Exception {
     public JceException(String message) {

@@ -1,5 +1,8 @@
 package com.ylc.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -9,13 +12,17 @@ import java.util.Base64;
 import java.util.Date;
 
 /**
- * @author: tree
- * @version: 1.0
- * date: 2017/8/21 11:56
- * @description:
- * own: Aratek
+ * author: tree
+ * version: 1.0
+ * since:
+ * date: 2018/4/15 16:28
+ * description:
+ * own:
  */
 public class JceCommonUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(JceCommonUtil.class);
+
     /**
      * 读取证书文件中的公钥串
      * @param path 证书文件路径
@@ -27,52 +34,38 @@ public class JceCommonUtil {
         try(InputStream inStream = new FileInputStream(file)) {
             // 创建X509工厂类
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            //CertificateFactory cf = CertificateFactory.getInstance("X509");
             // 创建证书对象
-            X509Certificate oCert = (X509Certificate) cf
-                    .generateCertificate(inStream);
+            X509Certificate oCert = (X509Certificate) cf.generateCertificate(inStream);
             inStream.close();
             SimpleDateFormat dateformat = new SimpleDateFormat("yyyy/MM/dd");
-            String info = null;
             // 获得证书版本
-            info = String.valueOf(oCert.getVersion());
-            System.out.println("证书版本:" + info);
+            logger.debug("证书版本:{}", String.valueOf(oCert.getVersion()));
             // 获得证书序列号
-            info = oCert.getSerialNumber().toString(16);
-            System.out.println("证书序列号:" + info);
+            logger.debug("证书序列号:{}",oCert.getSerialNumber().toString(16));
             // 获得证书有效期
             Date beforedate = oCert.getNotBefore();
-            info = dateformat.format(beforedate);
-            System.out.println("证书生效日期:" + info);
+            logger.debug("证书生效日期:{}",dateformat.format(beforedate));
             Date afterdate = oCert.getNotAfter();
-            info = dateformat.format(afterdate);
-            System.out.println("证书失效日期:" + info);
+            logger.debug("证书失效日期:{}",dateformat.format(afterdate));
             // 获得证书主体信息
-            info = oCert.getSubjectDN().getName();
-            System.out.println("证书拥有者:" + info);
+            logger.debug("证书拥有者:{}",oCert.getSubjectDN().getName());
             // 获得证书颁发者信息
-            info = oCert.getIssuerDN().getName();
-            System.out.println("证书颁发者:" + info);
+            logger.debug("证书颁发者:{}",oCert.getIssuerDN().getName());
             // 获得证书签名算法名称
-            info = oCert.getSigAlgName();
-            System.out.println("证书签名算法:" + info);
-
+            logger.debug("证书签名算法:{}",oCert.getSigAlgName());
             // 获得公钥
-            info = org.apache.commons.codec.binary.Base64.encodeBase64String(oCert.getPublicKey().getEncoded());
-            System.out.println("证书公钥:" + info);
-
+            String info = Base64.getEncoder().encodeToString(oCert.getPublicKey().getEncoded());
+            logger.debug("证书公钥:{}",info);
             return info;
         } catch (CertificateException e) {
-            System.out.println("解析证书出错！");
+            logger.debug("解析证书出错！");
             e.printStackTrace();
         } catch (FileNotFoundException e) {
-            System.out.println("未找到根证书文件！");
+            logger.debug("未找到根证书文件！");
             e.printStackTrace();
         } catch (IOException e) {
-            System.out.println("读取证书失败！");
+            logger.debug("读取证书失败！");
             e.printStackTrace();
-        }finally {
-
         }
         return null;
     }

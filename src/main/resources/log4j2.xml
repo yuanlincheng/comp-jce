@@ -21,7 +21,7 @@
 
         <!--日志级别：ALL<TRACE<DEBUG<INFO<WARN<ERROR<FATAL<OFF-->
         <!--设置根节点的日志输出级别，全配置文件以它为主-->
-        <root level="DEBUG">
+        <root level="TRACE">
             <appender-ref ref="Console"/>
         </root>
     </loggers>

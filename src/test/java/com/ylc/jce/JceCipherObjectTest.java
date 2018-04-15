@@ -3,20 +3,16 @@ package com.ylc.jce;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Base64;
-
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * 文件名：
- * 作者：tree
- * 时间：2017/4/21
- * 描述：
- * 版权：亚略特
+ * author: tree
+ * version: 1.0
+ * since:
+ * date: 2018/4/16 1:04
+ * description:
+ * own:
  */
 public class JceCipherObjectTest {
 
@@ -33,18 +29,16 @@ public class JceCipherObjectTest {
         String plain = "ylc";
         //测试RSA内部加密
 //        assertNotNull(jce.encrypt("RSA", "RSA/ECB/PKCS1Padding", plain.getBytes("UTF-8"), 1, 1, 1024, null));
-         //测试RSA外部加密
-//        key = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDVCVlw6KG0TYXFxhuBUAeHe0hjLrmgkIGL0KllDQaQjesLnGLkDZ8yj0r7vCx2PWbA1yVcvj7kTw3cHQBll/ev3y8tbQFzYCufWGQApM6wIoF+lId87x4N1zB2QBsQ1E9ysPHgeoIRhGmPWIkGH4c41HZUsDrAaFbMGr2P//3YjQIDAQAB";
-//        assertNotNull(jce.encrypt("RSA", "RSA/ECB/PKCS1Padding", plain.getBytes("UTF-8"), -2, 1, 1024, key));
+        //测试RSA外部加密
+        key = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCwIJ2Sk4uS6uA2X8Q/A0etdIvpF8q3Xf+yqSDvfq17ZlSxhNitXlCEGOqAUbnTpn0mBHF7jAZKfQQd+BdSjhKPzqBoIFNXqzyhQ+K6mOrUUl4YpyNdKxvSJnvK0jOX9reoRxiMLCjfxwv+viOvF35Ohm7M1lt+Rk3cACLXwSwfzwIDAQAB";
+        assertNotNull(jce.encrypt("RSA", "RSA/ECB/PKCS1Padding", plain.getBytes("UTF-8"), -2, 1, 1024, key));
         //测试AES加密
-        key = Base64.getEncoder().encodeToString("Aratek123456.com".getBytes("UTF-8"));
-        assertNotNull(jce.encrypt("AES", "AES/ECB/PKCS5PADDING", plain.getBytes("UTF-8"), -2, 3, -1, key));
+//        key = Base64.getEncoder().encodeToString("Aratek123456.com".getBytes("UTF-8"));
+//        assertNotNull(jce.encrypt("AES", "AES/ECB/PKCS5Padding", plain.getBytes("UTF-8"), -2, 3, -1, key));
+        //测试AES加密，1号索引位
+//        assertNotNull(jce.encrypt("AES", "AES/ECB/PKCS5Padding", plain.getBytes("UTF-8"), 1, 3, -1, null));
         //测试SM4加密
 //        assertNotNull(jce.encrypt("SM4", "SM4/ECB/PKCS5Padding", plain.getBytes("UTF-8"), 1, 3, -1, null));
-        //测试加密机外部密钥SM2加密
-//        key = "MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAETuSQynzV4LiOH0XClF03pzNdbzjxW/BpmW4u7yBrE2tuKcGuFfYRSioW+aiH2Qxq5Y73aT7fr9EhPIRA1yBejw==";
-//        assertNotNull(jce.encrypt("SM2", "SM2", plain.getBytes("UTF-8"), -2, 1, -1,key));
-
     }
 
     @Test
@@ -52,25 +46,22 @@ public class JceCipherObjectTest {
         String plain = "k7s8LDz5lva0C4vVb4+NO4wdXQ8jaKXfZNPIpbwb0XWBmV+oZC7qjOTD9+o7LnCqkdZ12O7oIVjMIAQGZS09phrDj1hK1I9AvJAaOd5Fo7xzNjvffFL11FUi+a4Nm5GDmxBicyoKTMZThleuLSzdIA==";
         String key = "SM4Key0123456789";
         //测试RSA内部解密
-//        plain ="jXr8G0aHsw+UZ8h1+z/ZXnHyd2hZLO114g8jAatYOpNvRADZ8Ov083txSOOh3neF6/z33xQf00n7A/7nISojeyX4RDU2sSmxTJYaBMdYdLkoAhHEX+0z/Eg/ITcul4k3qjAuMoBwE7mnYS9D6UYJ+3lTk3sErjcjDbdzyVBZozw=";
+//        plain ="Ed5+yvBBWh8bV8wV5FD8C4s6i+55NVueG49qFhtkRwTvMY2MvJK7V4cg3v29ZrE62g8bYA/qECK8uEKJCBwE0lFBO2CVvLRyMofrPcLOc9PQVtUUK0kkKm3wJlKggwX9iL5O2DMNc6VzeNLWmFpC719kglRMY3nk4jnfD+eph3k=";
 //        assertNotNull(jce.decrypt("RSA", "RSA/ECB/PKCS1Padding", plain, 1, 2, null, 1));
+        //测试RSA外部解密
+        plain ="Ed5+yvBBWh8bV8wV5FD8C4s6i+55NVueG49qFhtkRwTvMY2MvJK7V4cg3v29ZrE62g8bYA/qECK8uEKJCBwE0lFBO2CVvLRyMofrPcLOc9PQVtUUK0kkKm3wJlKggwX9iL5O2DMNc6VzeNLWmFpC719kglRMY3nk4jnfD+eph3k=";
+        key = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBALAgnZKTi5Lq4DZfxD8DR610i+kXyrdd/7KpIO9+rXtmVLGE2K1eUIQY6oBRudOmfSYEcXuMBkp9BB34F1KOEo/OoGggU1erPKFD4rqY6tRSXhinI10rG9Ime8rSM5f2t6hHGIwsKN/HC/6+I68Xfk6GbszWW35GTdwAItfBLB/PAgMBAAECgYARnGFFG720Bgo/RZog1toe7O1kdD2P0jVUDvc9G0SLdzL2wRrNUwXn/3nLNODI2fffikgym1CxuAhmWr0yQwR18/sMiKydINir0XQgO3YQbP3OBxipfAmoTUbA2qIyN8VN2PS8bznYlW8CtTV/KB1sM4Sb8x5tgtdMiRDGnJFQsQJBAOsUVZT5sdquoto8xmZZtW5LB4BEiH12TEiWevcWM6cc5DukJO7Zp3Ohojg9dWUmyEIb0bhj+ISwfrchmqvkBVcCQQC/zTbs+HWC0i1dgDp0V7Ks+3hoR3dSdfdbN7J7jqZzfGMmlTQafZlQ5Fv3sNjJ9EjHefNagSquytKWG+7wA/ZJAkAPqhA12BmY19A0OJ6DzXCAg/FhA7AQpCRbJePVuR4CAbPXoY1weQJmexvDIZ1D+zyW4yGrZsX1mYkoDM4wrAYLAkA+7xcWqm/kfRJlm62SfzQhjmHz1X9Rj2OaiqwF3si/HBFsl4iBKLUl1chXfa+klINM8Lbo+3kF4Yc3ufKszqABAkEAmyhXBk1yFN4uGuPipKL7mCZz4+s/hwPUa2eaxncEnt1Sh+HSNoKbHslii/36D3QTO2K/zeCNdBIVTffoHi+n6g==";
+        assertNotNull(jce.decrypt("RSA", "RSA/ECB/PKCS1Padding", plain, -2, 2, key, 1));
         //测试AES解密
-        plain = "vp5TQZgPFDmhCuT7l/VuBw==";
-        assertNotNull(jce.decrypt("AES", "AES/ECB/PKCS5PADDING", plain, 1, 3,null, 1));
+//        plain = "ttyyMop3WTDLVEwFiXynIQ==";
+//        assertNotNull(jce.decrypt("AES", "AES/ECB/PKCS5Padding", plain, 1, 3,null, 1));
+        //测试AES解密
+//        plain = "TwUWLP6uH4u540KfQNQqCQ==";
+//        key = Base64.getEncoder().encodeToString("Aratek123456.com".getBytes("UTF-8"));;
+//        assertNotNull(jce.decrypt("AES", "AES/ECB/PKCS5Padding", plain, -2, 3,key, 1));
         //测试SM4解密
-//         plain = "SQVgU8hiSzgLYWllUSmtTQ==";
+//         plain = "TjOvTCCXiTPcNfERGa7ang==";
 //        assertNotNull(jce.decrypt("SM4", "SM4/ECB/PKCS5Padding", plain, 1, 3, null, 1));
-        //测试SM2解密
-//        plain = "MHkCIQDkWJu4pZhbRXycustwUQNEw51ASrG7e7e3OoP8FJN2gwIgJHkFIveRH95+DEiLOq0vi8SAAvRFU5kYkRz3GLvhQA8EIEc2mESK8UhzTMZQ3DvWDn9lGnbO4QlxqTBKYgO3fJkCBBBWAnaAP61++J/x2g7HhHTn";
-//        key = "MGgCAQAwEwYHKoZIzj0CAQYIKoEcz1UBgi0ETjBMAgEBAgEBoUQDQgAEhx35njSywco0OKBaksDntNucl7EK06SDJY2Vr0Xd0XrB4TBq9/cWHedRUtii3S25rmZ26j0LWN6/WSfSHn3YNA==";
-//        assertNotNull(jce.decrypt("SM2", "SM2", plain, 1, 2, null, 2));
-//        plain = "MGwCIBCa82sbW+0RNHwOnHXdwk/dzmed7fn0MP5Tzn8IlRgBAiEA5V7ZlBNgGLmzqmOqy8GbJdS7WW5X7bbqouBt2o9m45sEIPRgSalKDf6STm6A/xzfuOdJPxfU/u9MP17Goe36YfiYBAOUkpg=";
-//        key = "MGgCAQAwEwYHKoZIzj0CAQYIKoEcz1UBgi0ETjBMAgEBAgEBoUQDQgAEhx35njSywco0OKBaksDntNucl7EK06SDJY2Vr0Xd0XrB4TBq9/cWHedRUtii3S25rmZ26j0LWN6/WSfSHn3YNA==";
-//        assertNotNull(jce.decrypt("SM2", "SM2", plain, -2, 2, key, 1));
-        //测试SM4解密
-//        plain = "RgW36OCnq7fbPrNxuwA8dz+YuVwrG6Rvgtwfja4AxIU=";
-//        key = "4z3V+yI79OWUIrRzqX6UJA==";
-//        assertNotNull(jce.decrypt("SM4", "SM4/CBC/PKCS5Padding", plain, -2, 3, key, 1));
     }
 
     @Test
@@ -95,29 +86,25 @@ public class JceCipherObjectTest {
 
     @Test
     public void testChangeByteToKey() throws Exception {
-        String key = "";
         //测试转换AES密钥
-        key = "TVXnwzWem3ULpTb9d9veIUTQ0xRs+r3UfnWozmyZyWw=";
+        String key = "TVXnwzWem3ULpTb9d9veIUTQ0xRs+r3UfnWozmyZyWw=";
         assertNotNull(jce.changeByteToKey("AES",key,3));
-        //测试转换SM2公钥
-        key = "MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAETuSQynzV4LiOH0XClF03pzNdbzjxW/BpmW4u7yBrE2tuKcGuFfYRSioW+aiH2Qxq5Y73aT7fr9EhPIRA1yBejw==";
-        assertNotNull(jce.changeByteToKey("SM2",key,1));
     }
 
     @Test
     public void testBatchSm2Dec() throws Exception{
-        boolean flag = true;
-        StringBuffer sb = new StringBuffer();
-        Files.readAllLines(Paths.get("F:\\enc.txt"), StandardCharsets.UTF_8).forEach(x -> sb.append(x));
-        String[] str = sb.toString().split(";");
-        String key = "MIGHAgEAMBMGByqGSM49AgEGCCqBHM9VAYItBG0wawIBAQIgFUpdUcvdCLa7/1Kuf47OUWC/XDRCMTKbHuxdnlkgUMihRANCAARO5JDKfNXguI4fRcKUXTenM11vOPFb8GmZbi7vIGsTa24pwa4V9hFKKhb5qIfZDGrljvdpPt+v0SE8hEDXIF6P";
-        for(String plain:str){
-            String[] str1 =plain.split(",");
-            if (!(str1[0].equals(jce.decrypt("SM2", "SM2", str1[1], -2, 2, key, 1)))) {
-                flag = false;
-            }
-        }
-        assertTrue(flag);
+//        boolean flag = true;
+//        StringBuffer sb = new StringBuffer();
+//        Files.readAllLines(Paths.get("F:\\enc.txt"), StandardCharsets.UTF_8).forEach(x -> sb.append(x));
+//        String[] str = sb.toString().split(";");
+//        String key = "MIGHAgEAMBMGByqGSM49AgEGCCqBHM9VAYItBG0wawIBAQIgFUpdUcvdCLa7/1Kuf47OUWC/XDRCMTKbHuxdnlkgUMihRANCAARO5JDKfNXguI4fRcKUXTenM11vOPFb8GmZbi7vIGsTa24pwa4V9hFKKhb5qIfZDGrljvdpPt+v0SE8hEDXIF6P";
+//        for(String plain:str){
+//            String[] str1 =plain.split(",");
+//            if (!(str1[0].equals(jce.decrypt("SM2", "SM2", str1[1], -2, 2, key, 1)))) {
+//                flag = false;
+//            }
+//        }
+//        assertTrue(flag);
     }
 
 }

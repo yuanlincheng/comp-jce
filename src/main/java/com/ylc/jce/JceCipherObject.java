@@ -13,41 +13,38 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Optional;
 
 /**
- * 文件名：
- * 作者：tree
- * 时间：2017/4/21
- * 描述：
- * 版权：亚略特
+ * author: tree
+ * version: 1.0
+ * since:
+ * date: 2018/4/15 16:32
+ * description:
+ * own:
  */
 public abstract class JceCipherObject {
 
     private static Logger logger = LoggerFactory.getLogger(JceCipherObject.class);
 
     //加解密算法提供者,此处默认为加密算法提供商代码
-    protected static String algRule = "";
+    protected String algRule = "";
 
     //子证书，用于缓存
-    static Certificate subCert = null;
+    Certificate subCert = null;
 
     /**
-     * 根据算法，模式,明文，密钥索引以及密钥类型将数据传递到加密机上加密
-     *
-     * @param alg         算法 ： RSA,AES,SM2,SM4
+     * 根据算法，模式,明文，密钥索引以及密钥类型对数据进行加密
+     * @param alg         算法 ： RSA,AES,SM4,SM2
      * @param trans       模式：RSA/ECB/PKCS1Padding,AES/ECB/PKCS5PADDING
      * @param plain       明文数据 二进制类型
-     * @param keyNum      密钥索引：1~100，  -1表示使用加密机外部密钥  -2表示外部密钥
+     * @param keyNum      密钥索引：1~100,-1表示使用外部密钥  -2表示指定密钥
      * @param keyType     密钥类型：1表示公钥，2表示私钥，3表示秘钥
      * @param keyLength   密钥位数：1024,2048,128   若keyNum != -1,则固定值为-1
      * @param externalKey 外部密钥，Base64编码串,若keyNum != -2,则固定值为null
@@ -55,7 +52,7 @@ public abstract class JceCipherObject {
      */
     public String encrypt(String alg, String trans, byte[] plain, int keyNum, int keyType, int keyLength, String externalKey) throws JceException{
         //此处调试输出
-        logger.debug("------------加密十指指纹数据开始-------------------------------");
+        logger.debug("------------加密数据开始-------------------------------");
         logger.debug("算法: " + alg);
         logger.debug("模式: " + trans);
         logger.debug("索引: " + keyNum);
@@ -67,8 +64,8 @@ public abstract class JceCipherObject {
             trans = JceCommonUtil.changeTransAble(trans);
         }
         //根据算法和索引获取密钥
-        Key key = null;
-        Cipher cipher = null;
+        Key key;
+        Cipher cipher;
         try {
             if (-2 != keyNum) {
                 if ("RSA".equals(alg) || "SM2".equals(alg)) {
@@ -107,9 +104,10 @@ public abstract class JceCipherObject {
             if (tResult == null) {
                 throw new JceException(trans + " 模式，加密出错");
             }
-            logger.debug("加密数据，加密后内容为: " + Base64.encodeBase64String(tResult).length());
+            logger.debug("加密数据，加密后内容长度为: " + Base64.encodeBase64String(tResult).length());
+            logger.trace("加密数据，加密后内容为: " + Base64.encodeBase64String(tResult));
             //返回加密数据
-            logger.debug("------------加密十指指纹数据结束-------------------------------");
+            logger.debug("------------加密数据结束-------------------------------");
             return Base64.encodeBase64String(tResult);
         } catch (NoSuchAlgorithmException e) {
             throw new JceException("指定的运算算法 " + alg + " 不存在，" + e.getMessage());
@@ -134,12 +132,11 @@ public abstract class JceCipherObject {
     }
 
     /**
-     * 根据算法，模式,Base64密文串，密钥索引以及密钥类型将数据传递到加密机上解密
-     *
-     * @param alg         算法 ： RSA,AES
+     * 根据算法，模式,Base64密文串，密钥索引以及密钥类型对数据进行解密
+     * @param alg         算法 ： RSA,AES,SM4,SM2
      * @param trans       模式：RSA/ECB/PKCS1Padding,AES/ECB/PKCS5PADDING,
      * @param plain       Base64密文串
-     * @param keyNum      密钥索引：1~100，  -1表示使用加密机外部密钥  -2表示外部密钥
+     * @param keyNum      密钥索引：1~100,-1表示使用外部密钥  -2表示指定密钥
      * @param keyType     密钥类型：1表示公钥，2表示私钥，3表示秘钥
      * @param externalKey 外部密钥，Base64编码串,若keyNum != -2,则固定值为null
      * @param resultType  返回数据编码类型， 1表示String  2表示Base64串
@@ -159,9 +156,9 @@ public abstract class JceCipherObject {
             trans = JceCommonUtil.changeTransAble(trans);
         }
         // 根据算法和索引获取密钥
-        Key key = null;
-        String result = null;
-        Cipher cipher = null;
+        Key key;
+        String result;
+        Cipher cipher;
         try {
             if (-2 != keyNum) {
                 if ("RSA".equals(alg) || "SM2".equals(alg)) {
@@ -207,7 +204,7 @@ public abstract class JceCipherObject {
             }
             // 返回加密数据
             if (1 == resultType) {
-                result = new String(tResult);
+                result = new String(tResult, StandardCharsets.UTF_8);
             } else {
                 result = Base64.encodeBase64String(tResult);
             }
@@ -231,18 +228,19 @@ public abstract class JceCipherObject {
             e.printStackTrace();
             throw new JceException("解密失败，" + e.getMessage());
         }
-        logger.debug("解密数据，解密后内容为: " + result.length());
+        logger.debug("解密数据，解密后内容长度为: " + result.length());
+        logger.trace("解密数据，解密后内容为: " + result);
         logger.debug("------------解密数据结束-------------------------------");
         return result;
     }
 
     /**
-     * 根据key对应的算法，签名算法,明文数据,密钥索引，密钥长度以及Base64编码串 将数据传递到加密机上签名
+     * 根据key对应的算法，签名算法,明文数据,密钥索引，密钥长度以及Base64编码串 对数据进行签名
      *
      * @param keyAlg      生成key对应的算法 ： RSA,AES
      * @param signAlg     签名算法 ： SHA1WithRSA,SHA224WithRSA...
      * @param plain       明文数据
-     * @param keyNum      密钥索引：1~100，  -1表示使用加密机外部密钥  -2表示外部密钥
+     * @param keyNum      密钥索引：1~100,-1表示使用外部密钥  -2表示指定密钥
      * @param keyLength   密钥位数：1024,2048,若keyNum != -1,则固定值为-1
      * @param externalKey 外部密钥，Base64编码串,若keyNum != -2,则固定值为null
      * @return String  成功 : Base64编码签名数据  失败： null
@@ -261,9 +259,9 @@ public abstract class JceCipherObject {
         }
 
         // 根据算法和索引获取公钥
-        PrivateKey key = null;
+        PrivateKey key;
         // 定义签名对象
-        Signature signatue = null;
+        Signature signatue;
         //存放Base64编码签名数据
         byte[] out;
         try {
@@ -288,7 +286,7 @@ public abstract class JceCipherObject {
             // 初始化签名对象(私钥)
             signatue.initSign(key);
             // 更新要验签的数据
-            signatue.update(plain.getBytes());
+            signatue.update(plain.getBytes(StandardCharsets.UTF_8));
             //进行签名运算
             out = signatue.sign();
 
@@ -306,13 +304,13 @@ public abstract class JceCipherObject {
     }
 
     /**
-     * 根据key对应的算法，签名算法,明文数据,Base64签名串以及密钥索引将数据传递到加密机上验签
+     * 根据key对应的算法，签名算法,明文数据,Base64签名串以及密钥索引对数据进行验签
      *
      * @param keyAlg      生成key对应的算法 ： RSA,AES
      * @param alg         签名算法 ： SHA1WithRSA,SHA224WithRSA...
      * @param plain       明文数据
      * @param signData    Base64签名串
-     * @param keyNum      密钥索引：1~100，  -1表示使用加密机外部密钥  -2表示外部密钥
+     * @param keyNum      密钥索引：1~100,-1表示使用外部密钥  -2表示指定密钥
      * @param externalKey 公钥数据(Base64编码串),若keyNum != -2,则固定值为null
      * @return boolean  成功 : true  失败： false
      */
@@ -331,10 +329,10 @@ public abstract class JceCipherObject {
             keyAlg = JceCommonUtil.changeAlgAble(keyAlg);
         }
         //根据算法和索引获取公钥
-        PublicKey key = null;
+        PublicKey key;
         //定义签名对象
-        Signature signatue = null;
-        boolean flag = false;
+        Signature signatue;
+        boolean flag;
         try {
             if (-2 != keyNum) {
                 // 获取RSA密钥对,-1为默认,无意义
@@ -356,7 +354,7 @@ public abstract class JceCipherObject {
             //初始化验签对象(公钥)
             signatue.initVerify(key);
             //更新要验签的数据
-            signatue.update(plain.getBytes());
+            signatue.update(plain.getBytes(StandardCharsets.UTF_8));
             //进行验签运算
             flag = signatue.verify(signDataByte);
         } catch (NoSuchAlgorithmException e) {
@@ -378,23 +376,20 @@ public abstract class JceCipherObject {
      * @param rootFilePath 根证书在服务器上的绝对路径
      * @return boolean  成功 : true  失败： false
      */
-    public boolean verifyCert(String certData, String rootFilePath) throws JceException {
+    public boolean verifyCert(String certData, String rootFilePath){
         logger.debug("------------证书验证开始-------------------------------");
         logger.debug("证书数据: " + certData.length());
         logger.debug("根证书路径: " + rootFilePath);
-        CertificateFactory cf = null;  //证书工厂类
+        CertificateFactory cf;  //证书工厂类
         boolean flag = false;   //验证通过标志
-        ByteArrayInputStream subIn = null;
-        FileInputStream rootIn = null;
-        try{
-            String start = "-----BEGIN CERTIFICATE-----\n";   //证书头
-            String end = "\n-----END CERTIFICATE-----";       //证书尾
-            String certificateValue = start + certData + end;  //完整证书串
-            subIn = new ByteArrayInputStream(certificateValue.getBytes("UTF-8"));  //将证书串写进流
+        String start = "-----BEGIN CERTIFICATE-----\n";   //证书头
+        String end = "\n-----END CERTIFICATE-----";       //证书尾
+        String certificateValue = start + certData + end;  //完整证书串
+        //读取根证书到输入流中  将证书串写进流
+        try( FileInputStream rootIn = new FileInputStream(rootFilePath);ByteArrayInputStream subIn = new ByteArrayInputStream(certificateValue.getBytes("UTF-8"))){
             cf = CertificateFactory.getInstance("X.509");       //证书生成格式定义为X.509
-            rootIn = new FileInputStream(rootFilePath);     //读取根证书到输入流中
             Certificate rootCert = cf.generateCertificate(rootIn);      //生成根证书对象
-            subCert = cf.generateCertificate(subIn);        //生成用户证书对象
+            setSubCert(cf.generateCertificate(subIn));      //生成用户证书对象
             logger.debug("根证书类型: " + rootCert.getType());
             logger.debug("子证书类型: " + subCert.getType());
             PublicKey rootPub = rootCert.getPublicKey();        //获取根证书中的公钥
@@ -405,32 +400,9 @@ public abstract class JceCipherObject {
             subCert.verify(rootPub);
             //验证通过标志
             flag = true;
-        }  catch (FileNotFoundException e) {
-            throw new JceException("指定的根证书不存在，" + e.getMessage());
-        } catch (CertificateException e) {
-            throw new JceException("根证书非法，" + e.getMessage());
-        } catch (NoSuchAlgorithmException e) {
-            throw new JceException("指定的签名算法不存在，" + e.getMessage());
-        } catch (InvalidKeyException e) {
-            throw new JceException("无效的证书公钥，" + e.getMessage());
-        } catch (SignatureException e) {
-            throw new JceException("签名数据串非法，" + e.getMessage());
-        } catch (NoSuchProviderException e) {
-            throw new JceException("指定的签名算法提供者不存在，" + e.getMessage());
-        } catch (Exception e) {
+        }  catch (Exception e) {
             e.printStackTrace();
-            throw new JceException("根据根证书验证子证书的有效性失败，" + e.getMessage());
-        } finally {
-            try {
-                if (Optional.of(rootIn).isPresent()) {
-                    rootIn.close();
-                }
-                if (Optional.of(subIn).isPresent()) {
-                    subIn.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            logger.debug("根据根证书验证子证书的有效性失败: " + e.getMessage());
         }
         logger.debug("------------证书验证结束-------------------------------");
         return flag;
@@ -463,7 +435,7 @@ public abstract class JceCipherObject {
                     //转成公钥
                     logger.debug("转换成公钥");
                     //初始化X.509密钥生成空间
-                    X509EncodedKeySpec keySpec = null;
+                    X509EncodedKeySpec keySpec;
                     //当密钥为按openssl标准产生时
                     if (keyBytes.length == 140) {
                         //在密钥数据的前面加上22位的JCE密钥头
@@ -494,35 +466,46 @@ public abstract class JceCipherObject {
                 //生成密钥
                 key = new SecretKeySpec(keyBytes, alg);
             }
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
+            logger.debug("此密钥的格式: " + key.getFormat());
+            logger.debug("------------密钥类型转换结束-------------------------------");
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        logger.debug("此密钥的格式: " + key.getFormat());
-        logger.debug("------------密钥类型转换结束-------------------------------");
         //返回密钥
         return key;
     }
 
     /**
-     * 根据算法和密钥索引从加密机上获取密钥对
-     *
+     * 根据算法和密钥索引从密钥存储区上获取密钥对
      * @param alg       算法
-     * @param keyNum    密钥索引：1~100，  -1表示使用加密机外部密钥
+     * @param keyNum    密钥索引：1~100，  -1表示使用外部密钥
      * @param keyLength 密钥位数：1024,2048,256
      * @return KeyPair 密钥对
      */
     public abstract KeyPair getKeyPair(String alg, int keyNum, int keyLength) throws JceException;
 
     /**
-     * 根据算法和密钥索引从加密机上获取密钥
-     *
+     * 根据算法和密钥索引从密钥存储区上获取密钥
      * @param alg       算法
-     * @param keyNum    密钥索引：1~100，  -1表示使用加密机外部密钥
+     * @param keyNum    密钥索引：1~100，  -1表示使用外部密钥
      * @param keyLength 密钥位数：1024,2048,256
      * @return Key 成功：密钥 ，失败： null
-     * @throws JceException
      */
     public abstract Key getKey(String alg, int keyNum, int keyLength) throws JceException;
+
+    public String getAlgRule() {
+        return algRule;
+    }
+
+    public void setAlgRule(String algRule) {
+        this.algRule = algRule;
+    }
+
+    public Certificate getSubCert() {
+        return subCert;
+    }
+
+    public void setSubCert(Certificate subCert) {
+        this.subCert = subCert;
+    }
 }
